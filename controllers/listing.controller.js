@@ -5,7 +5,7 @@ const router = require("./auth.controller")
 const Listing = require("../models/listing")
 
 router.get("/new",isSignedIn, (req,res)=>{
-    res.render("listing/new.ejs")
+    res.render("listings/new.ejs")
 })
 router.post("/" , isSignedIn, async(req,res)=>{
     try{
@@ -18,5 +18,18 @@ router.post("/" , isSignedIn, async(req,res)=>{
         res.send("Error")
     }
 })
+router.get("/", isSignedIn, async(req,res)=>{
+    try{
+        const foundListing = await Listing.find()
+        res.render("listings/index.ejs", {foundListing: foundListing})
+
+    }
+    catch(erro){
+        console.log(error)
+        res.send("Error")
+    }
+})
+
+
 
 module.exports = router

@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-</head>
-<body>
+<%- include('../partials/head') %>
     <h1>Hi im work</h1>
-</body>
-</html>
+    <ul>
+    <% foundListing.forEach((listing)=>{ %>
+        <li>
+        <h2><%= listing.title %></h2>
+        <img src="<%= listing.imageurl%>" alt="Image of <%=listing.titleImageUrl%>">
+        <p><%= listing.location%></p>
+        <p><%= listing.description%></p>
+        <% })%>
+        <br>
+        </li>
+        </ul>
+            </body>
+
+            </html>
