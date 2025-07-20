@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
+const listingsController = require("./controllers/listing.controller")
 const authController = require('./controllers/auth.controller')
 const isSignedIn = require('./middleware/is-signed-in')
 const passUserToView = require('./middleware/pass-user-to-view')
@@ -29,6 +30,7 @@ app.use(session({
     })
 }))
 app.use(passUserToView)
+app.use("/listings", listingsController)
 
 app.get('/', (req, res) => {
     res.render('index.ejs', { title: 'my App'})
