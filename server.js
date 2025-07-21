@@ -19,6 +19,7 @@ mongoose.connection.on('connected', () => {
 })
 
 // MIDDLEWARE
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
 app.use(methodOverride('_method'))
 app.use(morgan('dev'))
@@ -30,7 +31,6 @@ app.use(session({
         mongoUrl: process.env.MONGODB_URI,
     })
 }))
-app.use(express.static(path.join(__dirname, 'public')))
 app.use(passUserToView)
 
 

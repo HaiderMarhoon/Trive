@@ -1,13 +1,14 @@
 const mongoose = require("mongoose")
+const { CloudinaryStorage } = require("multer-storage-cloudinary")
 const Schema = mongoose.Schema
 
 const commentSchema = new mongoose.Schema({
     content: String,
-    author:{
-        type : Schema.Types.ObjectId,
+    author: {
+        type: Schema.Types.ObjectId,
         ref: "User"
     }
-},{ 
+}, {
     timestamps: true
 })
 
@@ -15,17 +16,26 @@ const commentSchema = new mongoose.Schema({
 const listingSchema = new Schema({
     title: String,
     location: String,
-    description:String,
-    imageurl: String,
+    description: String,
+    image: {
+        url: {
+            type:String,
+            required: true
+        },
+        cloudinary_id: {
+            type:String,
+            required: true
+        }
+    },
     titleImageUrl: String,
-    adder:{
+    adder: {
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    comments:[commentSchema]
+    comments: [commentSchema]
 
-},{
+}, {
     timestamps: true
 })
 
-module.exports = mongoose.model("listing", listingSchema)
+module.exports = mongoose.model("Listing", listingSchema)
