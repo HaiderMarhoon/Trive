@@ -105,6 +105,44 @@ router.post("/:listingId/comments", isSignedIn, async(req,res)=>{
     }
 })
 
+//delete the comment
+router.delete("/:listingId/comments/:commentId" , isSignedIn, async(req,res)=>{
+    try{
+        const foundListing = await Listing.findById(req.params.listingId)
+        const comment = foundListing.comments.id(req.params.commentId)
+
+        if(comment.author.equals(req.session.user._id)){
+            comment.deleteOne()
+            await foundListing.save()
+            res.redirect(`/listings/${req.params.listingId}`)
+        }
+
+    }
+    catch(error){
+        console.log(error)
+        res.send("Not authorized")
+    }
+})
+
+//edit comment
+
+router.put("/:listingId/comments/:commentId", isSignedIn , async(req,res)=>{
+    try{
+        const foundListing = await Listing.findById(req.params.listingId)
+        const comment = foundListing.comments.id(req.params.commentId)
+
+        if(comment.author._id.equals(req.session.user._id)){
+            comment.content = req.body.content
+            await foundListing.save()
+            res.redirect(`/listings/${req.params.listingId}`)
+        }
+
+    }
+    catch(error){
+        console.log(error)
+        res.send("Not authorized")
+    }
+})
 
 
 

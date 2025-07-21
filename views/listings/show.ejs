@@ -10,13 +10,23 @@
 <li>
     <%= comment.content %> -<em><%= comment.author.username%> </em>
 
+    <% if(comment.author._id.equals(user._id)){%>
+        <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=PUT" method="POST">
+            <input type="text" name="content" value="<%= comment.content %>">
+            <button type="submit"> Update</button>
+        </form>
+
+        <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=DELETE" method="POST">
+            <button type="submit">DELETE</button>
+        </form>
+    <%}%>
+    </li>
 <%})%>
-</li>
 </ul>
 
 <h3>Leave the comment</h3>
 <form action="/listings/<%= foundListings._id%>/comments" method="POST">
-    <textarea name="content" id="content" cols="30" rows="10"></textarea>
+    <textarea name="content" id="content"></textarea>
     <button type="submit">Post comments</button>
 </form>
 <a href="/listings/index">Back to Listings</a>
