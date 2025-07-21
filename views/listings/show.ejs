@@ -2,7 +2,7 @@
 <h2><%=foundListings.title%></h2>
 <h3><%=foundListings.adder.username%></h3>
 <h4><%= foundListings.location%></h4>
-<img src="<=%foundListings.imageulr%>" alt="<%= foundListings.titleImageUrl%>">
+ <img src="<%= foundListings.image.url %>" class="img-fluid rounded mb-3" alt="Image of <%= foundListings.title %>">
 <p><%=foundListings.description%></p>
 <h3>Comments</h3>
 <ul>

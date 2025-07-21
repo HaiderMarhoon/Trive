@@ -18,9 +18,21 @@ router.post('/sign-up', async (req, res) => {
     // check if someone already exists
     // req.body = form data
     console.log(req)
-    const userInDatabase = await User.findOne({ username: req.body.username })
+    const userInDatabase = await User.findOne({
+        $or:
+            [
+                { username: req.body.username },
+                { email: req.body.email }
+            ]
+    })
+
     if (userInDatabase) {
-        return res.send('Username already taken.')
+        if (userInDatabase.username === req.body.username) {
+            return res.send("Username is Taken")
+        }
+        else {
+            return res.send("Email already registered")
+        }
     }
     // check that password and confirmPassword are the same
     if (req.body.password !== req.body.confirmPassword) {
@@ -30,12 +42,17 @@ router.post('/sign-up', async (req, res) => {
     // hash the password
     const hashedPassword = bcrypt.hashSync(req.body.password, 10)
     req.body.password = hashedPassword
-    const newUser = await User.create(req.body)
+    const newUser = await User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    })
     req.session.user = {
         username: newUser.username,
+        email: newUser.email,
         _id: newUser._id,
     }
-    
+
     req.session.save(() => {
         console.log(req.session)
         res.redirect('/')
@@ -50,18 +67,24 @@ router.get('/sign-in', (req, res) => {
 // POST TO SIGN THE USER IN (CREATE SESSION)
 router.post('/sign-in', async (req, res) => {
     // check if user already exists in database
-    const userInDatabase = await User.findOne({ username: req.body.username })
+    const userInDatabase = await User.findOne({
+        $or: [
+            { username: req.body.usernameOrEmail },
+            { email: req.body.usernameOrEmail }
+        ]
+    });
     console.log(userInDatabase)
     // if userInDatabase is NOT NULL (that means the user does exist) then send this message
     if (!userInDatabase) {
         return res.send('Login failed. Please try again.')
     }
     const validPassword = bcrypt.compareSync(req.body.password, userInDatabase.password)
-    if(!validPassword) {
+    if (!validPassword) {
         return res.send('Login failed. Please try again.')
     }
     req.session.user = {
         username: userInDatabase.username,
+        email: userInDatabase.email,
         _id: userInDatabase._id,
     }
     req.session.save(() => {
