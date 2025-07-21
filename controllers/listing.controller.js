@@ -39,7 +39,7 @@ router.get("/index", async (req, res) => {
 //show
 router.get("/:listingId", async (req, res) => {
     try {
-        const foundListings = await Listing.findById(req.params.listingId).populate("adder")
+        const foundListings = await Listing.findById(req.params.listingId).populate("adder").populate("comments.author")
         res.render("listings/show.ejs", { foundListings: foundListings })
     }
     catch (error) {
@@ -74,6 +74,7 @@ router.get("/:listingId/edit", isSignedIn, async (req, res) => {
     }
 })
 
+// put the edit in the db
 router.put("/:listingId", isSignedIn , async(req,res)=>{
     try{
         const foundListing = await Listing.findById(req.params.listingId).populate("adder")
@@ -88,6 +89,22 @@ router.put("/:listingId", isSignedIn , async(req,res)=>{
         return res.send("Not authrized")
     }
 })
+
+// post comments
+router.post("/:listingId/comments", isSignedIn, async(req,res)=>{
+    try{
+        const foundListing = await Listing.findById(req.params.listingId)
+        req.body.author = req.session.user._id
+        foundListing.comments.push(req.body)
+        await foundListing.save()
+        res.redirect(`/listings/${req.params.listingId}`)
+    }
+    catch(error){
+        console.log(error)
+        res.send("Sorry fo that")
+    }
+})
+
 
 
 

@@ -4,6 +4,21 @@
 <h4><%= foundListings.location%></h4>
 <img src="<=%foundListings.imageulr%>" alt="<%= foundListings.titleImageUrl%>">
 <p><%=foundListings.description%></p>
+<h3>Comments</h3>
+<ul>
+<% foundListings.comments.forEach((comment)=>{%>
+<li>
+    <%= comment.content %> -<em><%= comment.author.username%> </em>
+
+<%})%>
+</li>
+</ul>
+
+<h3>Leave the comment</h3>
+<form action="/listings/<%= foundListings._id%>/comments" method="POST">
+    <textarea name="content" id="content" cols="30" rows="10"></textarea>
+    <button type="submit">Post comments</button>
+</form>
 <a href="/listings/index">Back to Listings</a>
 
 <% if(foundListings.adder._id.equals(user._id)){%>
