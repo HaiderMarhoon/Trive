@@ -32,7 +32,7 @@ app.use(session({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(passUserToView)
-app.use("/listings", listingsController)
+
 
 app.get('/', (req, res) => {
     res.render('index.ejs', { title: 'my App'})
@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
 
 // ROUTES
 app.use('/auth', authController)
+app.use("/listings", listingsController)
 
 app.get('/vip-lounge', isSignedIn, (req, res) => {
     res.send(`Welcome ✨`)

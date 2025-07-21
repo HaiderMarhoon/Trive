@@ -1,0 +1,17 @@
+<%- include('../partials/head') %>
+<h2><%=foundListings.title%></h2>
+<h3><%=foundListings.adder.username%></h3>
+<h4><%= foundListings.location%></h4>
+<img src="<=%foundListings.imageulr%>" alt="<%= foundListings.titleImageUrl%>">
+<p><%=foundListings.description%></p>
+<a href="/listings/index">Back to Listings</a>
+
+<% if(foundListings.adder._id.equals(user._id)){%>
+    <form action="/listings/<%= foundListings._id%>?_method=DELETE" method="POST">
+        <button type="submit">Delete</button>
+    </form>
+    <a href="/listings/<%= foundListings._id%>/edit">Edit</a>
+
+<%}%>
+</body>
+</html>
