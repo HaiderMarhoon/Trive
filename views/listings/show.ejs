@@ -1,7 +1,22 @@
 <%- include('../partials/head') %>
-<div class="listing-container">
-    <div class="listing-header">
-        <h1 class="listing-title"><%=foundListings.title%></h1>
+    <div class="listing-container">
+        <div class="listing-header">
+            <h1 class="listing-title">
+                <%=foundListings.title%>
+            </h1>
+            <form
+                action="/listings/<%= foundListings._id %>/<%= (user && user.favorites && user.favorites.includes(foundListings._id.toString())) ? 'unfavorite' : 'favorite' %>"
+                method="POST">
+                <button type="submit" class="favorite-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="<%= (user && user.favorites && user.favorites.includes(foundListings._id.toString())) ? 'red' : 'currentColor' %>"
+                        class="bi bi-heart" viewBox="0 0 16 16">
+                        <path
+                            d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+                    </svg>
+                </button>
+            </form>
+        </div>
         <div class="listing-meta">
             <span class="listing-author">Posted by: <%=foundListings.adder.username%></span>
             <span class="listing-location">📍 <%= foundListings.location%></span>
@@ -13,14 +28,18 @@
             <div class="gallery-item">
                 <img src="<%= img.url %>" alt="<%= img.title %>" class="gallery-image">
                 <% if(img.title) { %>
-                    <p class="image-caption"><strong>Title:</strong> <%= img.title %></p>
-                <% } %>
+                    <p class="image-caption"><strong>Title:</strong>
+                        <%= img.title %>
+                    </p>
+                    <% } %>
             </div>
-        <% }) %>
+            <% }) %>
     </div>
 
     <div class="listing-description">
-        <p><%=foundListings.description%></p>
+        <p>
+            <%=foundListings.description%>
+        </p>
     </div>
 
     <div class="listing-actions">
@@ -31,7 +50,7 @@
                     <button type="submit" class="btn-delete">Delete Listing</button>
                 </form>
             </div>
-        <%}%>
+            <%}%>
     </div>
 
     <div class="comments-section">
@@ -40,23 +59,27 @@
             <% foundListings.comments.forEach((comment)=>{%>
                 <div class="comment">
                     <div class="comment-content">
-                        <p><%= comment.content %></p>
+                        <p>
+                            <%= comment.content %>
+                        </p>
                         <span class="comment-author">- <%= comment.author.username%></span>
                     </div>
-                    
+
                     <% if(comment.author._id.equals(user._id)){%>
                         <div class="comment-actions">
-                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=PUT" method="POST" class="comment-form">
+                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=PUT"
+                                method="POST" class="comment-form">
                                 <input type="text" name="content" value="<%= comment.content %>" class="comment-input">
                                 <button type="submit" class="btn-update">Update</button>
                             </form>
-                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=DELETE" method="POST">
+                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=DELETE"
+                                method="POST">
                                 <button type="submit" class="btn-delete">Delete</button>
                             </form>
                         </div>
-                    <%}%>
+                        <%}%>
                 </div>
-            <%})%>
+                <%})%>
         </div>
 
         <div class="comment-form">
@@ -68,6 +91,7 @@
         </div>
     </div>
     <a href="/listings/index" class="btn-back">← Back to Listings</a>
-</div>
-</body>
-</html>
+    </div>
+    </body>
+
+    </html>

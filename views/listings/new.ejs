@@ -1,34 +1,35 @@
 <%- include('../partials/head') %>
-    <h1>New Trip</h1>
-    <form action="/listings" method="POST" enctype="multipart/form-data" class="row g-3">
-        <div class="mb-3">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" required>
-        </div>
-        <div class="mb-3">
-        <label for="location">Location</label>
-        <input type="text" name="location" id="location" required>
-        </div>
-        <div class="mb-3">
-        <label for="description">Description</label>
-        <textarea name="description" id="description" required></textarea>
-        </div>
-        <div class="md-3" id="image-group">
-            <div class="image-entry">
-                <label>Image:</label>
-                <input type="file" name="image" accept="image/*" required>
-
-                <label>Title for Image:</label>
-                <input type="text" name="imageTitles" required>
+    <h1 class="new-title">New Trip</h1>
+    <div class="new-container">
+        <form class="new-form" action="/listings" method="POST" enctype="multipart/form-data" class="row g-3">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" name="location" id="location" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" required></textarea>
+            </div>
+            <div class="form-group" id="image-group">
+                <div class="current-images">
+                    <label>Image:</label>
+                    <input type="file" name="image" accept="image/*" required>
 
-        <button type="button" onclick="addImageInput()">Add More Images</button>
-        <br><br>
+                    <label>Title for Image:</label>
+                    <input type="text" name="imageTitles" required>
+                </div>
+            </div>
 
-        <button type="submit">Create New</button>
-    </form>
+            <button type="button" onclick="addImageInput()">Add More Images</button>
+            <br><br>
 
+            <button type="submit">Create New</button>
+        </form>
+    </div>
     <script>
         function addImageInput() {
             const container = document.getElementById('image-group');

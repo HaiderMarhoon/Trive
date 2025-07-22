@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router();
 const Listing = require("../models/listing")
+const User = require("../models/user")
 const isSignedIn = require("../middleware/is-signed-in")
 const { cloudinary } = require("../config/cloudinary")
 const upload = require("../config/multer")
@@ -51,6 +52,42 @@ router.get("/index", async (req, res) => {
         res.send("Error")
     }
 })
+
+router.get("/favorite", isSignedIn, async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user._id).populate('favorites');
+        res.render("listings/favorite.ejs", { foundListing: user.favorites });
+    } catch (error) {
+        console.log(error);
+        res.redirect('/listings/index');
+    }
+});
+// Favorite a listing
+router.post("/:listingId/favorite", isSignedIn, async (req, res) => {
+    try {
+        const listingId = req.params.listingId;
+        const user = await User.findById(req.session.user._id);
+        
+        if (!user) {
+            res.send('error', 'User not found');
+            return res.redirect('back');
+        }
+
+        if (!user.favorites.includes(listingId)) {
+            user.favorites.push(listingId);
+            await user.save();
+            res.send('success', 'Added to favorites!');
+        } else {
+            res.send( 'This listing is already in your favorites');
+        }
+        
+        return res.redirect(`/listings/index`);
+    } catch (e) {
+        console.error('Favorite error:', e);
+        res.send('error', 'Failed to favorite listing');
+        return res.redirect('back');
+    }
+});
 
 //show
 router.get("/:listingId", async (req, res) => {

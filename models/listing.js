@@ -12,6 +12,31 @@ const commentSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// const favorite = new mongoose.Schema({
+//     title: String,
+//     location: String,
+//     description: String,
+//     image: [{
+//         url: {
+//             type: String,
+//             required: true
+//         },
+//         cloudinary_id: {
+//             type: String,
+//             required: true
+//         },
+//         title: {
+//             type: String,
+//             required: true
+//         }
+//     }],
+//     adder: {
+//         type: Schema.Types.ObjectId,
+//         ref: "User"
+//     },
+//     comments: [commentSchema],
+// })
+
 
 const listingSchema = new Schema({
     title: String,
@@ -35,8 +60,7 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    comments: [commentSchema]
-
+    comments: [commentSchema],
 }, {
     timestamps: true
 })
