@@ -1,5 +1,6 @@
 <%- include('../partials/head') %>
-    <h1>Edit <%=foundListing.title%></h1>
+    <h1>Edit <%=foundListing.title%>
+    </h1>
     <form action="/listings/<%= foundListing._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
         <label for="title">Title</label>
         <input type="text" name="title" id="title" value="<%= foundListing.title%>" required>
@@ -7,12 +8,49 @@
         <input type="text" name="location" id="location" value="<%= foundListing.location %>" required>
         <label for="description">Description</label>
         <textarea name="description" id="description" required><%= foundListing.description%></textarea>
-        <label for="imageurl">Image url</label>
-        <input type="file" name="imageurl" id="imageurl" value="<%= foundListing.imageurl%>" required>
-        <label for="titleImageUrl">Title for image</label>
-        <input type="text" name="titleImageUrl" id="titleImageUrl" value="<%= foundListing.titleImageUrl%>" required>
-        <button type="submit">Complete</button>
-        
+        <% foundListing.image.forEach((img, index)=> { %>
+            <div>
+                <img src="<%= img.url %>" alt="<%= img.title %>" width="200">
+                <p>Title: <%= img.title %>
+                </p>
+                <label>
+                    <input type="checkbox" name="deleteImages" value="<%= img.cloudinary_id %>">
+                    Delete this image
+                </label>
+            </div>
+            <hr>
+            <% }) %>
+
+                <h3>Add New Images</h3>
+                <div id="image-group">
+                    <div class="image-entry">
+                        <label>New Image:</label>
+                        <input type="file" name="image" accept="image/*">
+
+                        <label>Title for Image:</label>
+                        <input type="text" name="imageTitles">
+                    </div>
+                </div>
+
+                <button type="button" onclick="addImageInput()">Add More Image</button>
+                <br><br>
+                <button type="submit">Complete</button>
     </form>
-</body>
-</html>
+    <script>
+        function addImageInput() {
+            const container = document.getElementById('image-group');
+            const entry = document.createElement('div');
+            entry.classList.add('image-entry');
+            entry.innerHTML = `
+    <label>New Image:</label>
+    <input type="file" name="image[]" accept="image/*">
+
+    <label>Title for Image:</label>
+    <input type="text" name="imageTitles[]" placeholder="Image title">
+  `;
+            container.appendChild(entry);
+        }
+    </script>
+    </body>
+
+    </html>

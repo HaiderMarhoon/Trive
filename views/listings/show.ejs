@@ -1,42 +1,73 @@
 <%- include('../partials/head') %>
-<h2><%=foundListings.title%></h2>
-<h3><%=foundListings.adder.username%></h3>
-<h4><%= foundListings.location%></h4>
- <img src="<%= foundListings.image.url %>" class="img-fluid rounded mb-3" alt="Image of <%= foundListings.title %>">
-<p><%=foundListings.description%></p>
-<h3>Comments</h3>
-<ul>
-<% foundListings.comments.forEach((comment)=>{%>
-<li>
-    <%= comment.content %> -<em><%= comment.author.username%> </em>
+<div class="listing-container">
+    <div class="listing-header">
+        <h2 class="listing-title"><%=foundListings.title%></h2>
+        <div class="listing-meta">
+            <span class="listing-author">Posted by: <%=foundListings.adder.username%></span>
+            <span class="listing-location">📍 <%= foundListings.location%></span>
+        </div>
+    </div>
 
-    <% if(comment.author._id.equals(user._id)){%>
-        <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=PUT" method="POST">
-            <input type="text" name="content" value="<%= comment.content %>">
-            <button type="submit"> Update</button>
-        </form>
+    <div class="listing-gallery">
+        <% foundListings.image.forEach(img=> { %>
+            <div class="gallery-item">
+                <img src="<%= img.url %>" alt="<%= img.title %>" class="gallery-image">
+                <% if(img.title) { %>
+                    <p class="image-caption"><strong>Title:</strong> <%= img.title %></p>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
 
-        <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=DELETE" method="POST">
-            <button type="submit">DELETE</button>
-        </form>
-    <%}%>
-    </li>
-<%})%>
-</ul>
+    <div class="listing-description">
+        <p><%=foundListings.description%></p>
+    </div>
 
-<h3>Leave the comment</h3>
-<form action="/listings/<%= foundListings._id%>/comments" method="POST">
-    <textarea name="content" id="content"></textarea>
-    <button type="submit">Post comments</button>
-</form>
-<a href="/listings/index">Back to Listings</a>
+    <div class="listing-actions">
+        <a href="/listings/index" class="btn-back">← Back to Listings</a>
+        <% if(foundListings.adder._id.equals(user._id)){%>
+            <div class="owner-actions">
+                <a href="/listings/<%= foundListings._id%>/edit" class="btn-edit">Edit</a>
+                <form action="/listings/<%= foundListings._id%>?_method=DELETE" method="POST">
+                    <button type="submit" class="btn-delete">Delete Listing</button>
+                </form>
+            </div>
+        <%}%>
+    </div>
 
-<% if(foundListings.adder._id.equals(user._id)){%>
-    <form action="/listings/<%= foundListings._id%>?_method=DELETE" method="POST">
-        <button type="submit">Delete</button>
-    </form>
-    <a href="/listings/<%= foundListings._id%>/edit">Edit</a>
+    <div class="comments-section">
+        <h3>Comments</h3>
+        <div class="comments-list">
+            <% foundListings.comments.forEach((comment)=>{%>
+                <div class="comment">
+                    <div class="comment-content">
+                        <p><%= comment.content %></p>
+                        <span class="comment-author">- <%= comment.author.username%></span>
+                    </div>
+                    
+                    <% if(comment.author._id.equals(user._id)){%>
+                        <div class="comment-actions">
+                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=PUT" method="POST" class="comment-form">
+                                <input type="text" name="content" value="<%= comment.content %>" class="comment-input">
+                                <button type="submit" class="btn-update">Update</button>
+                            </form>
+                            <form action="/listings/<%= foundListings._id%>/comments/<%= comment._id%>?_method=DELETE" method="POST">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </div>
+                    <%}%>
+                </div>
+            <%})%>
+        </div>
 
-<%}%>
+        <div class="comment-form">
+            <h3>Leave a comment</h3>
+            <form action="/listings/<%= foundListings._id%>/comments" method="POST">
+                <textarea name="content" id="content" class="comment-textarea"></textarea>
+                <button type="submit" class="btn-submit">Post Comment</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

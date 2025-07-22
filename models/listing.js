@@ -17,17 +17,20 @@ const listingSchema = new Schema({
     title: String,
     location: String,
     description: String,
-    image: {
+    image: [{
         url: {
-            type:String,
+            type: String,
             required: true
         },
         cloudinary_id: {
-            type:String,
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
             required: true
         }
-    },
-    titleImageUrl: String,
+    }],
     adder: {
         type: Schema.Types.ObjectId,
         ref: "User"

@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router();
 const Listing = require("../models/listing")
 const isSignedIn = require("../middleware/is-signed-in")
-const {cloudinary} = require("../config/cloudinary")
+const { cloudinary } = require("../config/cloudinary")
 const upload = require("../config/multer")
 
 // get new
@@ -11,21 +11,32 @@ router.get("/new", isSignedIn, (req, res) => {
 })
 
 //post to db
-router.post("/", isSignedIn, upload.single('image') ,async (req, res) => {
+router.post("/", isSignedIn, upload.array('image', 10), async (req, res) => {
     try {
-        req.body.adder = req.session.user._id
-        req.body.image = {
-            url: req.file.path,
-            cloudinary_id: req.file.filename
-        }
-        await Listing.create(req.body)
-        res.redirect("/listings/index")
+        const imageTitles = req.body.imageTitles;
+        const files = req.files;
+
+        const image = files.map((file, index) => ({
+            url: file.path,
+            cloudinary_id: file.filename,
+            title: Array.isArray(imageTitles) ? imageTitles[index] : imageTitles
+        }));
+
+        const listing = new Listing({
+            title: req.body.title,
+            location: req.body.location,
+            description: req.body.description,
+            image: image,
+            adder: req.session.user._id
+        });
+
+        await listing.save();
+        res.redirect("/listings/index");
+    } catch (error) {
+        console.error(error);
+        res.send("Upload Error");
     }
-    catch (error) {
-        console.log(error)
-        res.send("Error")
-    }
-})
+});
 
 //index of trip
 router.get("/index", async (req, res) => {
@@ -58,18 +69,23 @@ router.delete("/:listingId", isSignedIn, async (req, res) => {
     try {
         const foundListing = await Listing.findById(req.params.listingId).populate("adder")
 
-        if (foundListing.adder._id.equals(req.session.user._id)) {
+        if (!foundListing.adder._id.equals(req.session.user._id)) {
             return res.send("Not authorized")
         }
-        if (foundListing.imageurl?.cloudinary_id) {
-            await cloudinary.uploader.destroy(foundListing.imageurl.cloudinary_id)
+        
+        // Delete all images from Cloudinary
+        for (const img of foundListing.image) {
+            if (img.cloudinary_id) {
+                await cloudinary.uploader.destroy(img.cloudinary_id)
+            }
         }
 
         await foundListing.deleteOne()
         return res.redirect("/listings/index")
     }
     catch (error) {
-        return res.send("Error the delete")
+        console.error(error)
+        return res.send("Error during deletion")
     }
 })
 
@@ -88,31 +104,64 @@ router.get("/:listingId/edit", isSignedIn, async (req, res) => {
 })
 
 // put the edit in the db
-router.put("/:listingId", isSignedIn, upload.single("imageurl"), async (req, res) => {
+router.put("/:listingId", isSignedIn, upload.array("image", 10), async (req, res) => {
     try {
-        const foundListing = await Listing.findById(req.params.listingId).populate("adder")
+        const foundListing = await Listing.findById(req.params.listingId).populate("adder");
 
-        if (foundListing.adder._id.equals(req.session.user._id)) {
-            if (req.file && foundListing.imageurl?.cloudinary_id) {
-                await cloudinary.uploader.destroy(foundListing.imageurl.cloudinary_id)
-                foundListing.imageurl.url = req.file.path
-                foundListing.imageurl.cloudinary_id = req.file.filename
-            }
-
-            foundListing.title = req.body.title
-            foundListing.location = req.body.location
-            foundListing.description = req.body.description
-            foundListing.titleImageUrl = req.body.titleImageUrl
-
-            await foundListing.save()
-            return res.redirect(`/listings/${req.params.listingId}`)
+        if (!foundListing.adder._id.equals(req.session.user._id)) {
+            return res.send("Not authorized");
         }
+
+        // Update simple fields
+        foundListing.title = req.body.title;
+        foundListing.location = req.body.location;
+        foundListing.description = req.body.description;
+
+        // Delete selected images if any
+        if (req.body.deleteImages) {
+            const idsToDelete = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+            foundListing.image = foundListing.image.filter(img => {
+                if (idsToDelete.includes(img.cloudinary_id)) {
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        // Update titles for existing images
+        if (req.body.existingImageTitles) {
+            const titles = Array.isArray(req.body.existingImageTitles)
+                ? req.body.existingImageTitles
+                : [req.body.existingImageTitles];
+
+            foundListing.image.forEach((img, i) => {
+                if (titles[i]) {
+                    img.title = titles[i];
+                }
+            });
+        }
+
+        // Add newly uploaded images
+        if (req.files && req.files.length > 0) {
+            const title = req.body.imageTitles || [];
+            const newImages = req.files.map((file, index) => ({
+                url: file.path,
+                cloudinary_id: file.filename,
+                title: Array.isArray(title) ? title[index] || "Untitled" : title || "Untitled"
+            }));
+
+            foundListing.image.push(...newImages);
+        }
+
+        await foundListing.save();
+        return res.redirect(`/listings/${req.params.listingId}`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send(error.message);
     }
-    catch (error) {
-        console.log(error)
-        return res.send("Not authrized")
-    }
-})
+});
+
+
 
 // post comments
 router.post("/:listingId/comments", isSignedIn, async (req, res) => {

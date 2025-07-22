@@ -1,19 +1,49 @@
 <%- include('../partials/head') %>
     <h1>New Trip</h1>
-    <form action="/listings" method="POST" enctype="multipart/form-data">
+    <form action="/listings" method="POST" enctype="multipart/form-data" class="row g-3">
+        <div class="mb-3">
         <label for="title">Title</label>
         <input type="text" name="title" id="title" required>
+        </div>
+        <div class="mb-3">
         <label for="location">Location</label>
         <input type="text" name="location" id="location" required>
+        </div>
+        <div class="mb-3">
         <label for="description">Description</label>
         <textarea name="description" id="description" required></textarea>
-        
-        <label for="image">Upload image:</label>
-        <input type="file" name="image" id="image" accept="image/*" required >
-        <label for="titleImageUrl">Title for image</label>
-        <input type="text" name="titleImageUrl" id="titleImageUrl" required>
+        </div>
+        <div class="md-3" id="image-group">
+            <div class="image-entry">
+                <label>Image:</label>
+                <input type="file" name="image" accept="image/*" required>
+
+                <label>Title for Image:</label>
+                <input type="text" name="imageTitles" required>
+            </div>
+        </div>
+
+        <button type="button" onclick="addImageInput()">Add More Images</button>
+        <br><br>
 
         <button type="submit">Create New</button>
     </form>
-</body>
-</html>
+
+    <script>
+        function addImageInput() {
+            const container = document.getElementById('image-group');
+            const entry = document.createElement('div');
+            entry.classList.add('image-entry');
+            entry.innerHTML = `
+      <label>Image:</label>
+      <input type="file" name="image" accept="image/*" required>
+      
+      <label>Title for Image:</label>
+      <input type="text" name="imageTitles" required>
+    `;
+            container.appendChild(entry);
+        }
+    </script>
+    </body>
+
+    </html>

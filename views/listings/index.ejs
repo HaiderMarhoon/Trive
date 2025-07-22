@@ -1,17 +1,54 @@
 <%- include('../partials/head') %>
-    <h1>Hi im work</h1>
-    <ul>
-    <% foundListing.forEach((listing)=>{ %>
-        <li>
-        <h2>a<%= listing.title %></h2>
-        <img src="<%= listing.image.url%>" alt="Image of <%=listing.titleImageUrl%>">
-        <p><%= listing.location%></p>
-        <p><%= listing.description%></p>
-        <a href="/listings/<%=listing._id%>">Veiw The Trip</a>
-        <% })%>
-        <br>
-        </li>
-        </ul>
+<div class="cards-container">
+  <% foundListing.forEach(listing => { %>
+    <div class="card">
+      <% if (listing.image.length > 0) { %>
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <% listing.image.forEach(img => { %>
+              <div class="swiper-slide">
+                <img src="<%= img.url %>" alt="Image of <%= img.title %>">
+              </div>
+            <% }) %>
+          </div>
+          <% if (listing.image.length > 1) { %>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          <% } %>
+        </div>
+      <% } else { %>
+        <img class="card-img" src="/placeholder-image.jpg" alt="No image available">
+      <% } %>
+      <div class="card-content">
+        <h2 class="card-title"><%= listing.title %></h2>
+        <p class="card-location"><%= listing.location %></p>
+        <p class="card-description"><%= listing.description %></p>
+        <p class="card-ImageTitle"> <%= listing.image.title %></p>
+        <a class="card-link" href="/listings/<%= listing._id %>">View The Trip</a>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.swiper-container').forEach(el => {
+      new Swiper(el, {
+        loop: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+      });
+    });
+  });
+</script>
+
             </body>
 
             </html>
