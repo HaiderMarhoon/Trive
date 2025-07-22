@@ -1,56 +1,84 @@
 <%- include('../partials/head') %>
-    <h1>Edit <%=foundListing.title%>
-    </h1>
-    <form action="/listings/<%= foundListing._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" value="<%= foundListing.title%>" required>
-        <label for="location">Location</label>
-        <input type="text" name="location" id="location" value="<%= foundListing.location %>" required>
-        <label for="description">Description</label>
-        <textarea name="description" id="description" required><%= foundListing.description%></textarea>
-        <% foundListing.image.forEach((img, index)=> { %>
-            <div>
-                <img src="<%= img.url %>" alt="<%= img.title %>" width="200">
-                <p>Title: <%= img.title %>
-                </p>
-                <label>
-                    <input type="checkbox" name="deleteImages" value="<%= img.cloudinary_id %>">
-                    Delete this image
-                </label>
+
+<div class="edit-container">
+  <h1 class="edit-title">Edit <%=foundListing.title%></h1>
+  
+  <form class="edit-form" action="/listings/<%= foundListing._id%>?_method=PUT" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" name="title" id="title" class="form-input" value="<%= foundListing.title%>" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" name="location" id="location" class="form-input" value="<%= foundListing.location %>" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="description" id="description" class="form-textarea" required><%= foundListing.description%></textarea>
+    </div>
+    
+    <div class="current-images">
+      <h3>Current Images</h3>
+      <% foundListing.image.forEach((img, index)=> { %>
+        <div class="image-item">
+          <img src="<%= img.url %>" alt="<%= img.title %>" class="image-preview">
+          <div class="image-info">
+            <% if (img.title) { %>
+              <p><strong>Title:</strong> <%= img.title %></p>
+            <% } %>
+            <div class="delete-checkbox">
+              <input type="checkbox" name="deleteImages" id="delete-<%= index %>" value="<%= img.cloudinary_id %>">
+              <label for="delete-<%= index %>">Delete this image</label>
             </div>
-            <hr>
-            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    
+    <div class="new-images">
+      <h3>Add New Images</h3>
+      <div id="image-group">
+        <div class="image-entry">
+          <div class="form-group">
+            <label class="form-label">New Image</label>
+            <input type="file" name="image" accept="image/*" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image Title</label>
+            <input type="text" name="imageTitles" class="form-input" placeholder="Optional title">
+          </div>
+        </div>
+      </div>
+      
+      <button type="button" class="btn btn-secondary" onclick="addImageInput()">+ Add Another Image</button>
+    </div>
+    
+    <div class="submit-group">
+      <a href="/listings/<%= foundListing._id %>" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>
 
-                <h3>Add New Images</h3>
-                <div id="image-group">
-                    <div class="image-entry">
-                        <label>New Image:</label>
-                        <input type="file" name="image" accept="image/*">
-
-                        <label>Title for Image:</label>
-                        <input type="text" name="imageTitles">
-                    </div>
-                </div>
-
-                <button type="button" onclick="addImageInput()">Add More Image</button>
-                <br><br>
-                <button type="submit">Complete</button>
-    </form>
-    <script>
-        function addImageInput() {
-            const container = document.getElementById('image-group');
-            const entry = document.createElement('div');
-            entry.classList.add('image-entry');
-            entry.innerHTML = `
-    <label>New Image:</label>
-    <input type="file" name="image[]" accept="image/*">
-
-    <label>Title for Image:</label>
-    <input type="text" name="imageTitles[]" placeholder="Image title">
-  `;
-            container.appendChild(entry);
-        }
-    </script>
-    </body>
-
-    </html>
+<script>
+  function addImageInput() {
+    const container = document.getElementById('image-group');
+    const entry = document.createElement('div');
+    entry.classList.add('image-entry');
+    entry.innerHTML = `
+      <div class="form-group">
+        <label class="form-label">New Image</label>
+        <input type="file" name="image" accept="image/*" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image Title</label>
+        <input type="text" name="imageTitles" class="form-input" placeholder="Optional title">
+      </div>
+    `;
+    container.appendChild(entry);
+  }
+</script>
+</body>
+</html>

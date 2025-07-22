@@ -1,7 +1,7 @@
 <%- include('../partials/head') %>
 <div class="listing-container">
     <div class="listing-header">
-        <h2 class="listing-title"><%=foundListings.title%></h2>
+        <h1 class="listing-title"><%=foundListings.title%></h1>
         <div class="listing-meta">
             <span class="listing-author">Posted by: <%=foundListings.adder.username%></span>
             <span class="listing-location">📍 <%= foundListings.location%></span>
@@ -24,7 +24,6 @@
     </div>
 
     <div class="listing-actions">
-        <a href="/listings/index" class="btn-back">← Back to Listings</a>
         <% if(foundListings.adder._id.equals(user._id)){%>
             <div class="owner-actions">
                 <a href="/listings/<%= foundListings._id%>/edit" class="btn-edit">Edit</a>
@@ -68,6 +67,7 @@
             </form>
         </div>
     </div>
+    <a href="/listings/index" class="btn-back">← Back to Listings</a>
 </div>
 </body>
 </html>

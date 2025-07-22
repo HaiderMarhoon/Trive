@@ -1,19 +1,34 @@
 <%- include('../partials/head') %>
-    <h1>Create a new account!</h1>
-    <form action="/auth/sign-up" method="POST">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username" required />
-      
-      <label for="email">Email:</label>
-      <input type="email" name="email" id="email" required />
-      
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password" required />
-      
-      <label for="confirmPassword">Confirm Password:</label>
-      <input type="password" name="confirmPassword" id="confirmPassword" required />
-      
-      <button type="submit">Sign up</button>
+<div class="auth-container">
+    <h1 class="auth-title">Create a new account</h1>
+    
+    <form class="auth-form" action="/auth/sign-up" method="POST">
+        <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" id="username" class="form-input" required placeholder="Enter your username">
+        </div>
+        
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-input" required placeholder="Enter your email">
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" id="password" class="form-input" required placeholder="Create a password">
+        </div>
+        
+        <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" required placeholder="Confirm your password">
+        </div>
+        
+        <button type="submit" class="submit-btn">Sign Up</button>
     </form>
+    
+    <div class="auth-footer">
+        Already have an account? <a href="/auth/sign-in" class="auth-link">Sign in</a>
+    </div>
+</div>
 </body>
 </html>
