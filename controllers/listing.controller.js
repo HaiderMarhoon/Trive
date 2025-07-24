@@ -69,8 +69,7 @@ router.post("/:listingId/favorite", isSignedIn, async (req, res) => {
         const user = await User.findById(req.session.user._id);
         
         if (!user) {
-            res.send('error', 'User not found');
-            return res.redirect('back');
+            return res.redirect(`/listings/index`);
         }
 
         if (!user.favorites.includes(listingId)) {
@@ -84,8 +83,7 @@ router.post("/:listingId/favorite", isSignedIn, async (req, res) => {
         return res.redirect(`/listings/index`);
     } catch (e) {
         console.error('Favorite error:', e);
-        res.send('error', 'Failed to favorite listing');
-        return res.redirect('back');
+        return res.redirect(`/listings/index`);
     }
 });
 
@@ -109,14 +107,6 @@ router.delete("/:listingId", isSignedIn, async (req, res) => {
         if (!foundListing.adder._id.equals(req.session.user._id)) {
             return res.send("Not authorized")
         }
-        
-        // Delete all images from Cloudinary
-        for (const img of foundListing.image) {
-            if (img.cloudinary_id) {
-                await cloudinary.uploader.destroy(img.cloudinary_id)
-            }
-        }
-
         await foundListing.deleteOne()
         return res.redirect("/listings/index")
     }
