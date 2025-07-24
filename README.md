@@ -45,7 +45,7 @@ Travel Memory Log is a web application that allows users to document and organiz
 - Express-session (authentication)
 - Dotenv (environment variables)
 
-##🚀 Usage
+## 🚀 Usage
 
 - Register a new account or login with existing credentials
 
@@ -76,7 +76,7 @@ npm start
 4. Open your browser and visit:
 📍 http://localhost:3000
 
-##🛠️ Configuration
+## 🛠️ Configuration
 In your .env file, make sure to define the following:
 ``` init
 PORT=3000
