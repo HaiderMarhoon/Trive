@@ -2,6 +2,9 @@
 
 <img width="576" alt="Travel Memory Log Logo" src="https://github.com/user-attachments/assets/e4a250d1-6b01-4526-beba-3328db80d4bd" />
 
+## You can use it like this link
+https://general-assembly-apps-a76cfd3eee55.herokuapp.com/
+
 ## Table of Contents
 - [Description](#description)
 - [Features](#features)
